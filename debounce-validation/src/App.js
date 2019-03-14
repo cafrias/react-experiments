@@ -1,5 +1,9 @@
 import React from "react";
 
+import SwipeableViews from "react-swipeable-views";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -9,6 +13,8 @@ import { withStyles } from "@material-ui/core/styles";
 import LoginForm from "./components/Naive";
 
 function App({ classes }) {
+  const [value, setValue] = React.useState(0);
+
   return (
     <>
       <CssBaseline />
@@ -20,8 +26,21 @@ function App({ classes }) {
         className={classes.container}
       >
         <Grid item xs={12} md={4}>
+          <Tabs
+            value={value}
+            onChange={(e, v) => setValue(v)}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+          >
+            <Tab label="Naive" />
+            <Tab label="Status" />
+          </Tabs>
           <Paper className={classes.paper}>
-            <LoginForm />
+            <SwipeableViews index={value} onChangeIndex={i => setValue(i)}>
+              <LoginForm />
+              <LoginForm />
+            </SwipeableViews>
           </Paper>
         </Grid>
       </Grid>
