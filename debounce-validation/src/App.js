@@ -11,6 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 
 import Naive from "./components/Naive";
+import Hooks from "./components/Hooks";
 
 function App({ classes }) {
   const [value, setValue] = React.useState(0);
@@ -33,13 +34,13 @@ function App({ classes }) {
             textColor="primary"
             variant="fullWidth"
           >
-            <Tab label="Naive" />
             <Tab label="Status" />
+            <Tab label="Naive" />
           </Tabs>
           <Paper className={classes.paper}>
             <SwipeableViews index={value} onChangeIndex={i => setValue(i)}>
-              <Naive />
-              <Naive />
+              {/* <Naive /> */}
+              <Hooks />
             </SwipeableViews>
           </Paper>
         </Grid>

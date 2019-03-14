@@ -10,6 +10,7 @@ import { Formik, Form } from "formik";
 
 import isEmail from "validator/lib/isEmail";
 import Input from "./Input";
+import FieldDebounced from "./Field/Debounced";
 
 function Naive({ classes }) {
   return (
@@ -28,6 +29,7 @@ function Naive({ classes }) {
             </Typography>
             <Input
               formikBag={formikBag}
+              field={FieldDebounced}
               id="email"
               name="email"
               type="email"
@@ -46,6 +48,7 @@ function Naive({ classes }) {
           <div className={classes.fieldGroup}>
             <Input
               formikBag={formikBag}
+              field={FieldDebounced}
               id="password"
               name="password"
               type="password"
