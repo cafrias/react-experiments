@@ -10,7 +10,7 @@ import Paper from "@material-ui/core/Paper";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import LoginForm from "./components/Naive";
+import Naive from "./components/Naive";
 
 function App({ classes }) {
   const [value, setValue] = React.useState(0);
@@ -25,7 +25,7 @@ function App({ classes }) {
         alignContent="center"
         className={classes.container}
       >
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={5}>
           <Tabs
             value={value}
             onChange={(e, v) => setValue(v)}
@@ -38,8 +38,8 @@ function App({ classes }) {
           </Tabs>
           <Paper className={classes.paper}>
             <SwipeableViews index={value} onChangeIndex={i => setValue(i)}>
-              <LoginForm />
-              <LoginForm />
+              <Naive />
+              <Naive />
             </SwipeableViews>
           </Paper>
         </Grid>

@@ -21,12 +21,12 @@ function Naive({ classes }) {
       validate={validate}
     >
       {formikBag => (
-        <Form style={{ width: "100%" }}>
+        <Form className={classes.form}>
           <div className={classes.fieldGroup}>
             <Typography variant="caption">
               Try with: `user@example.com`
             </Typography>
-            <Input.Debounced
+            <Input
               formikBag={formikBag}
               id="email"
               name="email"
@@ -44,7 +44,7 @@ function Naive({ classes }) {
             />
           </div>
           <div className={classes.fieldGroup}>
-            <Input.Debounced
+            <Input
               formikBag={formikBag}
               id="password"
               name="password"
@@ -129,5 +129,11 @@ export default withStyles(({ spacing }) => ({
     "&:last-child": {
       marginBottom: 0
     }
+  },
+  form: {
+    // Prevents weird horizontal scrolling glitch when
+    // Spinner appears on TextField
+    overflowX: "hidden",
+    width: "100%"
   }
 }))(Naive);

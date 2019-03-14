@@ -1,15 +1,17 @@
 import React from "react";
 
-import { ErrorMessage } from "formik";
+import { Field as FormikField, ErrorMessage } from "formik";
 
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
-import DebouncedField from "./DebouncedField";
+import FieldDebounced from "./Field/Debounced";
 
-export function Debounced({ formikBag, debounce, ...inputProps }) {
+export default function Input({ formikBag, debounce, ...inputProps }) {
+  const Field = debounce ? FieldDebounced : FormikField;
+
   return (
     <>
-      <DebouncedField
+      <Field
         {...inputProps}
         debounce={debounce}
         error={
@@ -27,9 +29,3 @@ export function Debounced({ formikBag, debounce, ...inputProps }) {
     </>
   );
 }
-
-const Input = {
-  Debounced
-};
-
-export default Input;
