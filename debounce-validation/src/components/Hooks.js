@@ -23,39 +23,19 @@ function Hooks({ classes, ...formikBag }) {
 
   const userExistsValidation = React.useRef(
     _debounce(async email => {
-      if (formikBag.touched["email"] && !formikBag.errors["email"]) {
-        setUserExists({ ...userExists, loading: true });
+      setUserExists({ ...userExists, loading: true });
 
-        const exists = await emailExists(email);
-        setUserExists({ valid: exists, loading: false });
+      const exists = await emailExists(email);
+      setUserExists({ valid: exists, loading: false });
 
-        if (!exists) {
-          console.log("Setting field error");
-          formikBag.setFieldError("email", "User doesn't exist");
-        }
+      if (!exists) {
+        console.log("Setting field error");
+        formikBag.setFieldError("email", "User doesn't exist");
       }
-    }, 50)
+    }, 200)
   ).current;
 
-  // React.useEffect(() => {
-  //   asyncValidations.userExists = _debounce(async email => {
-  //     console.log(formikBag.touched);
-  //     if (formikBag.touched["email"] && !formikBag.errors["email"]) {
-  //       setUserExists({ ...userExists, loading: true });
-
-  //       const exists = await emailExists(email);
-  //       setUserExists({ valid: exists, loading: false });
-
-  //       if (!exists) {
-  //         console.log("Setting field error");
-  //         formikBag.setFieldError("email", "User doesn't exist");
-  //       }
-  //     }
-  //   }, 50);
-  //   return () => {
-  //     delete asyncValidations.userExists;
-  //   };
-  // }, []);
+  // TODO: solve calling to async validation every time
 
   return (
     <Form className={classes.form}>
@@ -67,17 +47,25 @@ function Hooks({ classes, ...formikBag }) {
           type="email"
           label="Email"
           fullWidth
+          validate={async value => {
+            if (!value) {
+              return "Email is required";
+            }
+
+            if (!isEmail(value)) {
+              return "Email has invalid format";
+            }
+
+            if (!(await userExistsValidation(value))) {
+              return "User doesn't exist";
+            }
+          }}
           InputProps={{
             endAdornment: userExists.loading ? (
               <CircularProgress size={18} />
             ) : (
               undefined
             )
-          }}
-          onBlur={e => {
-            formikBag.setFieldTouched("email", true, true);
-            userExistsValidation(e.target.value);
-            // asyncValidations.userExists(e.target.value);
           }}
         />
       </div>
@@ -88,7 +76,6 @@ function Hooks({ classes, ...formikBag }) {
           type="password"
           label="Password"
           fullWidth
-          debounce={200}
         />
       </div>
       <div className={classes.fieldGroup}>
@@ -106,10 +93,10 @@ function Hooks({ classes, ...formikBag }) {
 async function validate(values) {
   const errors = {};
 
-  const emailError = validateEmail(values.email);
-  if (emailError) {
-    errors.email = emailError;
-  }
+  // const emailError = validateEmail(values.email);
+  // if (emailError) {
+  //   errors.email = emailError;
+  // }
 
   const passwordError = validatePassword(values.password);
   if (passwordError) {
@@ -175,7 +162,7 @@ export default withFormik({
     password: ""
   }),
   displayName: "LoginForm",
-  handleSubmit(values) {
+  async handleSubmit(values) {
     console.log("Submitting values:", values);
   },
   validate

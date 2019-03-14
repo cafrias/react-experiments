@@ -10,7 +10,7 @@ export default function Input({
   formik,
   label,
   fullWidth,
-  onBlur,
+  InputProps,
   ...inputProps
 }) {
   const Field = field || FormikField;
@@ -23,8 +23,20 @@ export default function Input({
           return (
             <TextField
               {...field}
-              onBlur={onBlur}
               label={label}
+              InputProps={InputProps}
+              // onBlur={e => {
+              //   if (!asyncValidation) {
+              //     field.onBlur(e);
+              //     return;
+              //   }
+
+              //   form.setFieldTouched(inputProps.name, true, true);
+
+              //   if (!form.errors[inputProps.name]) {
+              //     asyncValidation(e.target.value);
+              //   }
+              // }}
               fullWidth={fullWidth}
               error={
                 form.touched[inputProps.name] && !!form.errors[inputProps.name]

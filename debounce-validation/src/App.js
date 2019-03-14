@@ -1,21 +1,14 @@
 import React from "react";
 
-import SwipeableViews from "react-swipeable-views";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import Naive from "./components/Naive";
 import Hooks from "./components/Hooks";
 
 function App({ classes }) {
-  const [value, setValue] = React.useState(0);
-
   return (
     <>
       <CssBaseline />
@@ -27,21 +20,8 @@ function App({ classes }) {
         className={classes.container}
       >
         <Grid item xs={12} md={5}>
-          <Tabs
-            value={value}
-            onChange={(e, v) => setValue(v)}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="fullWidth"
-          >
-            <Tab label="Status" />
-            <Tab label="Naive" />
-          </Tabs>
           <Paper className={classes.paper}>
-            <SwipeableViews index={value} onChangeIndex={i => setValue(i)}>
-              {/* <Naive /> */}
-              <Hooks />
-            </SwipeableViews>
+            <Hooks />
           </Paper>
         </Grid>
       </Grid>
