@@ -1,6 +1,11 @@
+/**
+ * This approach debounces the async validation function.
+ *
+ * Gotchas:
+ *
+ * - Async validation function gets called every time field validation gets called but at least it's debounced
+ */
 import React from "react";
-
-import _debounce from "lodash/debounce";
 
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
@@ -12,30 +17,10 @@ import { Form, withFormik } from "formik";
 
 import isEmail from "validator/lib/isEmail";
 import Input from "./Input";
-
-const asyncValidations = {};
+import useDebouncedValidator from "../hooks/useDebouncedValidator";
 
 function Hooks({ classes, ...formikBag }) {
-  const [userExists, setUserExists] = React.useState({
-    loading: false,
-    valid: false
-  });
-
-  const userExistsValidation = React.useRef(
-    _debounce(async email => {
-      setUserExists({ ...userExists, loading: true });
-
-      const exists = await emailExists(email);
-      setUserExists({ valid: exists, loading: false });
-
-      if (!exists) {
-        console.log("Setting field error");
-        formikBag.setFieldError("email", "User doesn't exist");
-      }
-    }, 200)
-  ).current;
-
-  // TODO: solve calling to async validation every time
+  const [userExists, userExistsValidation] = useDebouncedValidator(emailExists);
 
   return (
     <Form className={classes.form}>
@@ -44,9 +29,6 @@ function Hooks({ classes, ...formikBag }) {
         <Input
           id="email"
           name="email"
-          type="email"
-          label="Email"
-          fullWidth
           validate={async value => {
             if (!value) {
               return "Email is required";
@@ -57,15 +39,20 @@ function Hooks({ classes, ...formikBag }) {
             }
 
             if (!(await userExistsValidation(value))) {
-              return "User doesn't exist";
+              return "User not found";
             }
           }}
-          InputProps={{
-            endAdornment: userExists.loading ? (
-              <CircularProgress size={18} />
-            ) : (
-              undefined
-            )
+          TextFieldProps={{
+            fullWidth: true,
+            type: "email",
+            InputProps: {
+              endAdornment: userExists.loading ? (
+                <CircularProgress size={18} />
+              ) : (
+                undefined
+              )
+            },
+            label: "Email"
           }}
         />
       </div>
@@ -73,9 +60,11 @@ function Hooks({ classes, ...formikBag }) {
         <Input
           id="password"
           name="password"
-          type="password"
-          label="Password"
-          fullWidth
+          TextFieldProps={{
+            type: "password",
+            fullWidth: true,
+            label: "Password"
+          }}
         />
       </div>
       <div className={classes.fieldGroup}>
@@ -93,11 +82,6 @@ function Hooks({ classes, ...formikBag }) {
 async function validate(values) {
   const errors = {};
 
-  // const emailError = validateEmail(values.email);
-  // if (emailError) {
-  //   errors.email = emailError;
-  // }
-
   const passwordError = validatePassword(values.password);
   if (passwordError) {
     errors.password = passwordError;
@@ -108,21 +92,9 @@ async function validate(values) {
   }
 }
 
-function validateEmail(value) {
-  if (!value) {
-    return "Email is required";
-  }
-
-  if (!isEmail(value)) {
-    return "Email has invalid format";
-  }
-}
-
 function emailExists(value) {
-  console.log("Checking email exists");
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      console.log("time");
       if (value === "user@example.com") {
         resolve(true);
       } else {

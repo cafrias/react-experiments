@@ -8,39 +8,25 @@ import TextField from "@material-ui/core/TextField";
 export default function Input({
   field,
   formik,
-  label,
-  fullWidth,
-  InputProps,
-  ...inputProps
+  TextFieldProps,
+  ...fieldProps
 }) {
+  const { name } = fieldProps;
   const Field = field || FormikField;
 
   return (
     <>
       <Field
-        {...inputProps}
+        {...fieldProps}
         render={({ field, form }) => {
+          const touched = form.touched[name];
+          const error = !!form.errors[name];
+
           return (
             <TextField
               {...field}
-              label={label}
-              InputProps={InputProps}
-              // onBlur={e => {
-              //   if (!asyncValidation) {
-              //     field.onBlur(e);
-              //     return;
-              //   }
-
-              //   form.setFieldTouched(inputProps.name, true, true);
-
-              //   if (!form.errors[inputProps.name]) {
-              //     asyncValidation(e.target.value);
-              //   }
-              // }}
-              fullWidth={fullWidth}
-              error={
-                form.touched[inputProps.name] && !!form.errors[inputProps.name]
-              }
+              {...TextFieldProps}
+              error={touched && error}
             />
           );
         }}
@@ -49,7 +35,7 @@ export default function Input({
         component={Typography}
         variant="body2"
         color="error"
-        name={inputProps.name}
+        name={name}
       />
     </>
   );

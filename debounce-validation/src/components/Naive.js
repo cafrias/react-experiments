@@ -1,3 +1,10 @@
+/**
+ * This approach debounces Validation.
+ *
+ * Gotchas:
+ *  - Debounce is applied to every single field
+ */
+
 import React from "react";
 
 import CircularProgress from "@material-ui/core/CircularProgress";
